@@ -1,0 +1,397 @@
+superset of javascript
+built by microsift
+compiles down to regular javascript
+less error prone
+code readibility and maintainibility
+
+
+Nan is typeof number
+********************************************
+TypeScript: Variable Types
+
+let example1: boolean = true;
+
+let example2: number = 35;
+
+let example3: string = 'Hello World';
+
+let example3: any=232;   //can take any type 
+
+let example3: string | number=35; //can take number or string
+
+const arrayExample = [1, 3, 4, 5];
+
+let example2 = arrayExample.reduce((num1, num2) => num1 + num2); //type function 
+
+let example3 = 'Hello world'; // type string 
+
+let example4: undefined = undefined;
+
+let example5: null = null;
+
+*****************************************
+bear.model.ts
+
+export class Bear {
+    claws: number;
+    
+    constructor(data: number) {
+        this.claws = data;
+    }
+}
+
+index.ts
+
+import { Bear } from './bear.model'; 
+
+const bear = new Bear(3);
+
+if (bear instanceof Bear) {							//typeof doesnot works
+    console.log("Hello from TypeScript");     //o/p   Hello from TypeScript  
+}
+
+*******************************************************************
+TypeScript: Type Assertions
+
+let definetlyNotAString: any = 'I am a string';
+
+let strLength = (definetlyNotAString as string).length;     //typecasting into string
+			
+			OR
+
+let strLength = (<string> definetlyNotAString).length;      //typecasting into string
+
+
+*******************************************************************
+TypeScript: Arrays
+
+
+const example1: string[] = ['Hello World'];
+
+const example2: (number | boolean)[] = [1, 2, true];
+
+const example3: boolean[][] = [ [true, false] ] ;     //2 d array
+
+
+****************************************************************
+
+Tuples
+
+const exampleTuple: [string, number] = ['https://www.YouTube.com/CodingTutorials360', 30];  
+//can take value in form of string number only
+
+******************************************************************
+Enum
+
+
+index.ts
+
+import { Age } from './age.enum';
+
+function totalAge(age1: Age, age2: Age) {
+    return age1 + age2;
+}
+--------------
+age.enum.ts
+
+
+export enum Age {
+    dylan = 30,
+    mother = 21
+} 
+
+******************************************************
+Object
+
+const example1: object = undefined;
+
+const example2: Object = NaN;    //avoid this 
+
+const example3: {} = {};    //example3 is empty object 
+example3.firstName = 'Dylan';       ///error  
+
+
+
+******************************************************
+Parameter
+
+-----------------------
+person.model.ts
+
+export class Person {
+    firstName: string;
+    middleName: string;
+    lastName: string;
+    
+    constructor(data?: any) {
+        this.firstName = data.firstName || 'Dylan';
+        this.lastName = data.lastName || 'Israel';
+        this.middleName = data.middleName;    
+    }
+}
+
+
+-------------------------
+index.ts
+
+import { Person } from './person.model';
+
+function add(val1: number, val2: number) {
+    return val1 + val2;
+}
+
+add(1, 10);
+
+function sayHello(person: Person) {
+    return `Say Hello to My Little Friend, ${person.firstName}!`    
+}
+
+sayHello(new Person({firstName: 'Dylan'}));
+
+
+
+***************************************
+
+Return Types
+
+import { Person } from './person.model';
+
+function add(val1: number, val2: number): number {    //return type must be number
+    return val1 + val2;
+}
+
+function sayHello(person: Person): string {       //return type must be string otherwise compile time errror
+    return `Say Hello to My Little Friend, ${person.firstName}!`    
+}
+
+function voidExample(): void {
+    add(1,2);
+}
+
+function neverExample(): never {
+    throw Error;
+}
+
+*************************************************************************
+Custom Types
+
+
+type person = {firstName: string};
+
+const example1: object = undefined;
+
+const example2: Object = NaN;
+
+const example3: person = {firstName: 'Dollan'};
+
+example3.firstName = 'Dylan';
+
+
+**************************************************
+Interfaces
+
+----------------------------
+person.interface.ts
+
+export interface Person {
+    firstName: string;
+    middleName: string;
+    lastName: string;
+}
+
+----------------------
+index.ts
+
+import { Person } from './person.interface';
+
+const example1: Person = {firstName: 'Dollan', middleName: 'Dollan', lastName: 'Dollan'};
+
+example1.firstName = 'Dylan';      //reassingnng
+example1.middleName = 'Coding God';   //reassingnng
+example1.lastName = 'Israel';     //reassingnng
+
+
+****************************************************************************
+  Barrels   (all  imports in 1 file and importing only that file)
+  ----------------------------------
+ bear.inteface.ts 
+  
+  export interface Bear {
+    claws: number;
+}
+---------------------------
+man.inteface.ts
+
+export interface Man {
+    firstName: string;
+}
+
+----------------------------------
+allFile.ts     //file which exports all the interface
+
+export * from './bear.interface';
+export * from './man.interface';
+
+
+----------------
+index.ts   //file which imports only allFile.ts bcoz it has all interface which we need
+
+import { Bear, Man } from './interfaces/allFile';
+
+
+
+**********************************************************
+
+Models
+
+----------------
+person.model.ts
+
+export class Person {
+    firstName: string;
+    middleName: string;
+    lastName: string;
+    
+    constructor(data?: any) {
+        this.firstName = data.firstName || 'Dylan';   //default value is Dylan
+        this.lastName = data.lastName || 'Israel';			//default value is Israel
+        this.middleName = data.middleName;    
+    }
+}
+--------------------------
+index.ts
+
+import { Person } from './person.model';
+
+const example1: Person = new Person();
+
+example1.firstName = 'Dylan';
+example1.middleName = 'Coding God';
+example1.lastName = 'Israel';
+
+
+**************************************************************
+Intersection Types
+
+bear.interface.ts
+
+export interface Bear {
+    claws: number;
+}
+--------------------
+man.interface.ts
+
+export interface Man {
+    firstName: string;
+}
+--------------------------
+pig.interface.ts
+
+export interface Pig {
+    bacon: boolean;
+}
+
+------------------------------
+index.ts    //Barrels
+
+export * from './bear.interface';
+export * from './man.interface';
+export * from './pig.interface';
+
+----------------------------------
+index.ts
+
+import { Bear, Man, Pig } from './interfaces';
+
+let man: Man | Pig;
+let bear: Bear;
+let pig: Pig;
+
+type ManBearPig = Bear & Man & Pig   //intersection having one type muptiple types.
+
+let manBearPig: ManBearPig ;
+manBearPig.firstName = 'Dylan';
+manBearPig.claws = 3;
+manBearPig.bacon = false;
+
+
+****************************************
+Generics
+
+eg1.		function example<T>(arg: T): T {
+			
+			return arg;
+		}
+
+		example(5);
+
+
+eg2		function example<T>(arg: T[]): T {
+			
+			return arg[0];
+		}
+
+		example([5]);
+**************************************
+
+Access Modifiers
+by default its public
+
+public,private,read only,protected
+
+
+animal.model.ts
+
+export class Animal {
+    protected type: string;
+    
+    protected constructor(data?: any) {
+        this.type = data.type;
+    }
+}
+
+-------------------------------------------------------
+
+bear.model.ts
+
+import { Animal } from './animal.model';
+
+export class Bear extends Animal{
+    public claws: number;
+    readonly name: string;
+    private tail: boolean;
+    
+    constructor(data?: any) {
+        super(data);
+        this.claws = data.claws;
+        this.name = data.name;
+        this.tail = data.tail;
+    }
+    
+    public add(num1, num2) {
+        const result = num1 + num2;
+    return result;
+    }
+    
+    private addTwo(num1, num2): number {
+        return num1 + num2;
+    }
+    
+}
+
+
+-----------------------
+
+index.ts
+
+import { Bear } from './bear.model';
+import { Animal} from './animal.model';
+
+const bear = new Bear({name: 'Omega', tail: true});
+bear.claws = 3;
+bear.name='sss';    //error bcoz its readonly
+bear.tail=false;   //error bcoz its not accesible
+bear.add(1, 2);
+
+******************************************************************
+to check javascript code write //@ts-check on top of file of typescript

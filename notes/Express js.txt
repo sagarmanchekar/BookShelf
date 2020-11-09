@@ -1,0 +1,181 @@
+Express js
+
+MongoDB is an open-source, document database designed for ease of development and scaling. This database is also used to store data.
+
+Mongoose is a client API for node.js which makes it easy to access our database from our Express application
+
+npm init
+npm install --save express
+npm install -g nodemon     //It runs ths server when changes have been made
+
+
+index.js      (to run use node index.js in cmd)
+
+var express = require('express');
+var app = express();
+
+app.get('/', function(req, res){
+   res.send("Hello world!");
+});
+
+app.listen(3000);
+
+
+
+
+********************************************
+Routers
+
+things.js
+
+var express = require('express');
+var router = express.Router();
+
+router.get('/', function(req, res){
+   res.send('GET route on things.');
+});
+router.post('/', function(req, res){
+   res.send('POST route on things.');
+});
+
+//export this router to use in our index.js
+module.exports = router;
+--------------
+index.js
+
+var express = require('Express');
+var app = express();
+
+var things = require('./things.js');
+
+//both index.js and things.js should be in same directory
+app.use('/things', things);
+
+app.listen(3000);
+
+********************************
+URL building
+
+var express = require('express');
+var app = express();
+
+app.get('/things/:name/:id', function(req, res) {                       // http://localhost:3000/things/tutorialspoint/12345.
+   res.send('id: ' + req.params.id + ' and name: ' + req.params.name); //o/p=>id:123 and name :tutorialspoint
+
+-------------
+app.get('/things/:id([0-9]{5})', function(req, res){   //regular expression to take only 5 digit no.
+   res.send('id: ' + req.params.id);
+});
+
+});
+app.listen(3000)
+
+*************************************
+
+ Pug converts this very simple looking markup to html. We don’t need to keep track of closing our tags, 
+ no need to use class and id keywords, rather use '.' and '#' to define them.
+
+doctype html
+html
+   head
+      title = "Hello Pug"
+   body
+      p.greetings#people Hello World!
+---
+
+To run this page, add the following route to your app −
+
+app.get('/first_template', function(req, res){
+   res.render('first_view');
+});
+
+---
+
+You will get the output as − Hello World! Pug converts this very simple looking markup to html. 
+We don’t need to keep track of closing our tags, no need to use class and id keywords,
+ rather use '.' and '#' to define them. The above code first gets converted to −
+
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Hello Pug</title>
+   </head>
+   
+   <body>
+      <p class = "greetings" id = "people">Hello World!</p>
+   </body>
+</html>
+
+****************************
+To define attributes, we use a comma separated list of attributes, in parenthesis.
+ Class and ID attributes have special representations.
+ The following line of code covers defining attributes, classes and id for a given html tag.
+
+div.container.column.main#division(width = "100", height = "100")
+
+
+
+var express = require('express');
+var app = express();
+
+app.get('/dynamic_view', function(req, res){
+   res.render('dynamic', {
+      name: "TutorialsPoint", 
+      url:"http://www.tutorialspoint.com"
+   });
+});
+
+app.listen(3000);
+
+---------------
+dynamic.pug
+html
+   head
+      title = name
+   body
+      h1 Greetings from #{name}      //o/p  Greetings from Tutorialspoint
+      a(href = url) URL
+	  
+***************************************************
+Components
+
+
+HEADER.PUG
+
+div.header.
+   I'm the header for this website.
+   
+   
+---   
+CONTENT.PUG
+
+html
+   head
+      title Simple template
+   body
+      include ./header.pug
+      h3 I'm the main content
+      include ./footer.pug
+	  
+-----	  
+FOOTER.PUG
+
+
+div.footer.
+   I'm the footer for this website.
+   
+----
+Create a route for this as follows −
+
+var express = require('express');
+var app = express();
+
+app.get('/components', function(req, res){
+    res.render('content');
+});
+
+app.listen(3000);
+
+********************************************************
+
+

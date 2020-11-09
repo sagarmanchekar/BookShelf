@@ -1,0 +1,447 @@
+Redux
+
+-Centralizes application's state.
+-Makes data flow transparent and predictable.
+
+
+**************************
+****Functional Programming****
+
+-object oriented
+-Procedural
+-event driven
+
+
+1)Functions as First-Class Citizens
+ 
+ assign them to variable
+ 
+ function sayhello(){
+ return "heelp world"
+ }
+ 
+ let fn=sayhello; //we are not calling we are passing reference
+ fn();  //here we are calling sayhello
+ ------------
+ function as arg to anoher function
+ 
+ 
+ function sayhello(){
+ retyrn "heelp world"
+ }
+ 
+ function greet(fnmessage){
+	console.log(fnmessage());   
+ }
+ greet(sayhello);//passing reffere of sayhello not callig
+ 
+ ----------------------------
+ function returning a fuction
+ 
+ function sayhello(){
+ return function(){
+	return "hello world"
+	}
+ }
+ 
+ let fn=sayhello();  //gives anonymous funct
+let msg= fn();
+
+
+*******************************************
+
+Higher order function =is function that takes funct as arg or  returns function or both.
+
+-map and setTimeout are example of higher order function bcz they take funct as arg
+
+***********************************************
+
+Normal Way
+
+let input="    JavaScript   ";
+let output="<div>"+input.trim()+"</div>";
+
+Functional Programming****
+
+const trim=str=>str.trim();
+const wrapInDiv=str=>`<div>${str}</div>`
+const toLoweCase=str=>str.toLowerCase();
+
+const result=wrapInDiv(toLoweCase(trim(input)));   //read right to left   //Functional Composition
+
+
+******lodash to reduce earlier problem of paranthests
+
+
+
+import {compose,pipe} form 'lodash/fp'
+
+let input="    JavaScript   ";
+const trim=str=>str.trim();
+const wrapInDiv=str=>`<div>${str}</div>`
+const toLoweCase=str=>str.toLowerCase();
+
+const result=wrapInDiv(toLoweCase(trim(input)));  //problem of paranthesis and reading from right to left
+
+		OR
+//here we solved problem of paranthesis		
+const transform=compose(wrapInDiv,toLoweCase,trim); //passing reff not calling of funcions
+
+transform(input); //actually calling function in right to left order
+
+			OR
+
+const transform=pipe(trim,toLoweCase,wrapInDiv);//now passing reff in left to right order with the help of pipe
+transform(input); //actually calling function in right to left order
+
+*******************************************************
+
+***********Currying a function***************
+
+funcion add(a){
+	return function(b){
+		return a+b;
+	}
+}
+
+	OR
+
+const add1=>a=>b=>a+b;	//same as (a,b)=>a+b
+
+
+const f=add(5)
+f(1);
+OR
+add(1)(5);  //add(1,5)  calling 
+
+
+			eg1
+			
+let input="    JavaScript   ";
+const trim=str=>str.trim();
+const wrap=(type,str)=>`<${type}>${str}</${type}>`
+const toLoweCase=str=>str.toLowerCase();
+
+//in pipe o/p of first is i/p to second funcion
+const transform=pipe(trim,toLoweCase,wrap("div"));//error bcoz wrap takes 2 parameter
+
+
+***solution***
+
+let input="    JavaScript   ";
+const trim=str=>str.trim();
+const wrap=type=>str=>`<${type}>${str}</${type}>`    solution by currying funcion
+const toLoweCase=str=>str.toLowerCase();
+
+
+const transform=pipe(trim,toLoweCase,wrap("div"));//now we can pass div or span anything 
+
+
+********************************************************
+
+Pure Function in FUnctional Programming****
+-no ranom values
+-no current data/time
+-no global state(DOM,files,db,etc)
+-no mutation of parameters.
+
+BENEFITS
+-self documenting
+-easily testable
+-concurrency
+-cacheable
+
+const person ={name:"John" address:{Country:'usa',city:'san Francisco'}};
+const updated={...person,name:"Bob"};//usjng spread operator to copy (shallow copy)
+
+const updated={
+	...person,
+	address:{
+		...person.address,
+		city:"New York:
+		},
+	name:'Bob'
+};
+console.log(person);    //city is still San Francisco bcoz here it does deep copy
+
+***************************************
+
+const n=[1,2,3];
+
+//Adding
+const index=n.indexOf(2)
+const added=[...n.slice(0,index),4,...n]
+
+/?Removing
+const removed=numbers.filter(n=>n!==2);    //removes 2
+
+Updating
+const updated=n.map(n=>(n==2 ? 20 :n)); //1,20,3
+
+*********************************
+
+npm i immutable
+
+
+import {Map} from 'immutable'
+
+let book=Map({title:"Hraay potter"});
+
+funcion publish(book){
+return book.set("isPublished",true);
+}
+
+book=publish(book);  //returns new object bcoz og is immutable
+comsole.log(book.JS());  //convert to javascript object
+
+*****************************************
+
+Immer
+
+npm i immer
+
+import {produce} from 'immer'
+
+let book=Map({title:"Hraay potter"});
+
+funcion publish(book){
+return produce(book,draftBook=>{
+	draftBook.isPublished=true;  //draftBook is proxy object we can add as many property we want 
+	it will create new object
+}) 
+}
+
+let updated=publish(book);  //returns new object bcoz og is immutable
+
+comsole.log(book);  //{title:"Hrayy Potter"} //og not modified
+comsole.log(updated);  //{title:Harry Potter,isPublished:true}   //updated object 
+
+*********************************************************
+
+reducer => is funct that takes cureent instance of store  and returns updated instance(Event Handlers)
+action => is plain  js that describes what happen (Event)
+
+
+//example
+function reducer(store,action){
+const updated={...store};
+updated.products=???
+}
+
+
+
+each reducer is responsible to change specific part of store
+
+
+
+action--dispatch-->Store----->Reducer
+
+
+
+Redux application
+1)Design the store
+2)Define the actions
+3)Create a reducer
+4)Set up the store
+
+npm i redux@4.0
+
+1)Design the store
+
+[
+	{
+		id:1,
+		description:"",
+		resolved:false
+	}
+]
+
+2)Define the actions
+
+add a bug
+mark as resolved
+delete a bug
+
+{
+	type:"bugAdded"
+	payload:{
+		description:""
+	}	
+}
+
+
+{
+	type:"bugRemoved",
+	payload:{
+		id:1
+	}	
+}
+
+3)Create a reducer  //job is to return new state based on actions
+
+
+reducer.js
+
+let lastid=0;
+	
+	funcion reducer(state=[],action){
+	
+	switch(action.type){
+		case "bugAdded":
+			return[
+				...state,    //spread operator
+				{
+					id:++lastid,
+					description:action.payload.description,
+					resolved:false
+				}
+		];
+		
+		case "bugRemoved":
+				return state.filter(bug => bug.id !== action.payload.id)
+	
+		default :return state;
+	}
+		
+			OR
+	
+	if(action.type == 'bugAdded')
+		return[
+		...state,    //spread op
+			{
+				id:++lastid,
+				description:action.payload.description,
+				resolved:false
+			}
+		];
+	
+	else if(action.type === 'bugRemoved')
+	return state.filter(bug => bug.id !== action.payload.id)
+
+	return state;
+	}
+
+
+4)Set up the store
+
+index.js
+
+import {createStore} from 'redux''
+import reducer from './reducer';
+
+const store=createStore(reducer);
+export default store;
+
+
+
+index.js
+
+import store from './store';
+
+store.dispatch({
+	type:"bugAdded",
+	payload:{
+	description:"Bug1"
+	}
+});
+
+console.log(store.getState());   //we get {id:1,description:"Bug1",resolved:false}
+
+store.dispatch({
+	type:"bugRemoved",
+	payload:{
+	id:1
+	}
+});
+
+
+console.log(store.getState()); ///get empty array
+
+	
+****************************************************
+
+Subscribe
+	
+const unsubscribe=store.subscribe(()=>{
+	console.log("Store changede",store.getState());   //we get notified twice 1st when added and 2nd
+														when deleted
+})
+
+
+
+import store from './store';
+
+store.dispatch({
+	type:"bugAdded",
+	payload:{
+	description:"Bug1"
+	}
+});
+
+unsubscribe();  //to avoid memory leak  //when we unsubscribe we get notified only once
+
+console.log(store.getState());   //we get {id:1,description:"Bug1",resolved:false}
+
+store.dispatch({
+	type:"bugRemoved",
+	payload:{
+	id:1
+	}
+});
+
+
+console.log(store.getState()); ///get empty array
+
+
+
+
+console.log(store);  //Methods => dispatch,subscribe,getState,replaceReducer,Symbol
+
+
+******************************************
+
+when we dispatch an action store calls  reducer its gonna get current state and action which 
+we passed based on type of action we get new state notify the subscribers
+
+internal strut of dispatch
+1) state=reducer(state,action);
+2 notify the subscribers
+
+
+********************
+actionTypes.js
+
+export const BUG_ADDED="bugAdded"   ///decalreing constatnts
+export  const BUG_REMOVED="bugRemoved"
+
+
+
+actions.js
+import * as actions from './actionTypes'
+
+export funcion bugAdded(description){
+	
+	return{
+	type:actions.BUG_ADDED,
+		payload:{
+		description:description
+		}
+	}
+}
+
+			OR
+			
+export const bugAdded=description =>({
+	type:actions.BUG_ADDED,
+			payload:{
+			description:description		}	
+})
+
+
+index.js
+import {bugAdded} from './actions'
+
+store.dispatch(bugAdded("Bug 1"));   //calling the action functions to give readymade objetct
+
+
+

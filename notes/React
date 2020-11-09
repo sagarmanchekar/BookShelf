@@ -1,0 +1,2203 @@
+
+
+
+
+The easiest way to learn something is to do it in a hard way
+
+Components
+JSX
+Styling
+Props
+State
+Event Handling
+Lifecycle methods
+HTTP
+Forms
+************************
+Why React?
+Speed(Virtual DOM)
+Reusable web components
+Maintained by Facebook
+
+var,const block scope
+let function scope
+
+
+Each component in React has a lifecycle which you can monitor and manipulate during its three main phases.
+
+The three phases are: Mounting, Updating, and Unmounting.
+
+****Mounting****
+Mounting means putting elements into the DOM.
+
+React has four built-in methods that gets called, in this order, when mounting a component:
+
+constructor()
+getDerivedStateFromProps()
+render()
+componentDidMount()
+The render() method is required and will always be called, the others are optional and will be called if you define them.
+
+
+constructor
+The constructor() method is called before anything else, when the component is initiated, and it is the natural place to set up the initial state and other initial values.
+----------------
+
+Updating
+
+The next phase in the lifecycle is when a component is updated.
+
+A component is updated whenever there is a change in the component's state or props.
+
+React has five built-in methods that gets called, in this order, when a component is updated:
+
+
+Updating**
+getDerivedStateFromProps()
+shouldComponentUpdate()
+render()
+getSnapshotBeforeUpdate()
+componentDidUpdate()
+The render() method is required and will always be called, the others are optional and will be called if you define them.
+
+
+
+Unmounting  ************
+The next phase in the lifecycle is when a component is removed from the DOM, or unmounting as React likes to call it.
+
+React has only one built-in method that gets called when a component is unmounted:
+
+componentWillUnmount()
+
+*********************************
+
+Passing Arguments
+If you want to send parameters into an event handler, you have two options:
+
+1. Make an anonymous arrow function:
+	class Football extends React.Component {
+  shoot = (a) => {
+    alert(a);
+  }
+  render() {
+    return (
+      <button onClick={() => this.shoot("Goal")}>Take the shot!</button>
+    );
+  }
+}
+
+ReactDOM.render(<Football />, document.getElementById('root'));
+
+
+2. Bind the event handler to this.
+
+	class Football extends React.Component {
+  shoot(a) {
+    alert(a);
+  }
+  render() {
+    return (
+      <button onClick={this.shoot.bind(this, "Goal")}>Take the shot!</button>
+    );
+  }
+}
+
+ReactDOM.render(<Football />, document.getElementById('root'));
+-------------------------------------------------------
+index.js
+
+	import React from "react"
+	import ReactDOM from "react-dom"
+
+	// JSX
+	ReactDOM.render(<div><h1>Hello world!</h1><p>This is a paragraph</p></div>, document.getElementById("root"))
+
+--------------------------------------------
+index.html
+
+		<html>
+			<head>
+				<link rel="stylesheet" href="style.css">
+			</head>
+			<body>
+				<div id="root"></div>
+				<script src="index.pack.js"></script>
+			</body>
+		</html>
+		
+		
+***************************************************
+eg1 
+
+		import React from "react"
+		import ReactDOM from "react-dom"
+
+		ReactDOM.render(
+		  <ul>
+			<li>1</li>
+			<li>2</li>
+			<li>3</li>
+		  </ul>,
+		  document.getElementById("root")
+		)
+		
+		
+*********************************************************
+
+React Functional Components
+
+import React from "react"
+import ReactDOM from "react-dom"
+
+function MyApp() {    //our own component
+  return (
+    <ul>
+      <li>1</li>
+      <li>2</li>
+      <li>3</li>
+    </ul>
+  )
+}
+
+ReactDOM.render(
+  <MyApp />,
+  document.getElementById("root")
+)
+
+
+************************************************
+
+// Objectives:
+// 1. Set up the basic React code from scratch
+// 2. Create a functional component called MyInfo that returns the following UI:
+    // a. An h1 with your name
+    // b. A paragraph with a little blurb about yourself
+    // c. An ordered or unordered list of the top 3 vacation spots you'd like to visit
+// 3. Render an instance of that functional component to the browser
+// Extra challenge: learn on your own (Google!) how you can add some style to your page.
+// (We will also cover this in an upcoming lesson).
+
+import React from "react";
+import ReactDOM from "react-dom";
+
+function Myname(){
+  return(
+    
+    <h1>Sagar</h1>
+  ) 
+}
+
+function MyPara(){
+  return(
+    
+    <p>hiii ths  wm kwndjhwjdwhdwndknwkdnwkdw
+    wjbdwbdjwndjnwd Sagar</p>
+  ) 
+}
+
+function MyVac(){
+  return(
+    <ul>
+      <li>Goa</li>
+      <li>Manali</li>
+      <li>Hyderbad</li>
+    </ul>
+    
+  ) 
+}
+ReactDOM.render(
+  <div>
+    <Myname/>
+    <MyPara/>
+    <MyVac/>
+
+  </div>
+,document.getElementById("root"));
+
+
+**************************************************************************************************
+Move components into separate files
+
+		import React from "react"    //compulsory
+
+		function MyInfo() {
+		  return (
+			<div>
+			  <h1>Bob Ziroll</h1>
+			  <p>This is a paragraph about me...</p>
+			  <ul>
+				<li>Thailand</li>
+				<li>Japan</li>
+				<li>Nordic Countries</li>
+			  </ul>
+			</div>
+		  )
+		}
+
+		export default MyInfo
+
+
+		--------------------
+		index.js
+
+		import React from "react"
+		import ReactDOM from "react-dom"
+
+		import MyInfo from "./components/MyInfo"
+
+		ReactDOM.render(<MyInfo />, document.getElementById("root"))
+
+
+		**********************************************
+		Every component can have its sub component
+		App component is main here.
+		ReactDOM.render(<App/>,document.getElementById("root"))
+									-
+									-
+									-
+		<Awesome Header> 			<MyInfo>   				<Awesome Footer>
+			<logo/>					<div></div>				<footer></footer>
+			<img/>
+
+
+		--------------------------
+		App.js
+
+		import React from "react"
+		import Footer from "./Footer"
+		import Header from "./Header"
+		import MainContent from "./MainContent"
+
+
+		function App() {
+			return (
+				<div>
+					<Header />
+					<MainContent/>
+					<Footer />
+				</div>
+			)
+		}
+
+		export default App
+
+
+		--------------------------------------------
+		Footer.js
+
+		import React from "react"
+
+		function Footer() {
+			return (
+				<footer>
+					<h3>This is my footer element</h3>
+				</footer>
+			)
+		}
+
+		export default Footer
+
+		---------------------------------------------------
+		Header.js
+
+
+		import React from "react";
+
+		function Header(){
+			
+				return (
+					<header>This is header</header>   
+				)
+		}
+
+		export default Header;
+
+
+		-----------------------------------------------------
+		MainContent.js
+
+
+		import React from "react"
+
+		function MainComponent(){
+			return (
+				<p>this is main component</p>
+			)
+			
+			
+		}
+
+		export default MainComponent;
+
+
+		-----------------------------------------------------
+		index.js
+
+		import React from "react"
+		import ReactDOM from "react-dom"
+		import Header from "./Header"
+		import App from "./App"
+
+
+		ReactDOM.render(<div><App/></div>, document.getElementById("root"))
+
+
+*******************************************************************************************************
+Styling React with CSS Classes
+
+use className instead of class during adding css to file(works obly on React element not on tags 
+which we have created)
+reason -underneath jsx is using vanila6 DOM api 
+document.getElementById("ad").className+="Adwd"
+
+
+import React from "react"
+
+function Header() {
+    return (
+        <header className="navbar">This is the header</header>
+    )
+}
+
+export default Header
+
+
+*********************************************************************************
+to write in javscript use {} in jsx
+
+eg1		import React from "react"
+		import ReactDOM from "react-dom"
+
+		function App() {
+		  const firstName = "Bob"
+		  const lastName = "Ziroll"
+		  
+		  return (
+			<h1>Hello {`${firstName} ${lastName}`}!</h1>     //using braces we are writing js code in jsx]
+		  )
+		}
+
+		ReactDOM.render(<App />, document.getElementById("root"))
+
+
+
+
+eg2
+			import React from "react"
+		import ReactDOM from "react-dom"
+
+		function App() {
+		  const date = new Date()   //inbuild function
+		  const hours = date.getHours()
+		  let timeOfDay
+		  
+		  if (hours < 12) {
+			timeOfDay = "morning"
+		  }
+		  else if (hours >= 12 && hours < 17) {
+			timeOfDay = "afternoon"
+		  }
+		  else {
+			timeOfDay = "night"
+		  }
+		  
+		  return (
+			<h1>Good {timeOfDay}!</h1>
+		  )
+		}
+
+		ReactDOM.render(<App />, document.getElementById("root"))
+
+***************************************************************
+
+React Inline Styles with the Style Property
+
+Normal inline way to add css
+ return (
+    <h1 style={{color: "#FF8C00", backgroundColor: "#FF2D00"}}>Good {timeOfDay}!</h1>
+  )
+}
+
+-------------------
+adding css inline through object
+inside javscript i.e {inside this} we cannot have background-color so we use backgroundColor
+		
+		
+		import React from "react"
+		import ReactDOM from "react-dom"
+
+		function App() {
+		  const date = new Date(2018, 6, 31, 15)
+		  const hours = date.getHours()
+		  let timeOfDay
+
+		  const styles = {    //here we created object of style to avoid adding styles in tags
+			fontSize: 30
+		  }
+		  
+		  if (hours < 12) {
+			timeOfDay = "morning"
+			styles.color = "#04756F"   //can add any property to object
+		  } 
+		  else if (hours >= 12 && hours < 17) {
+			timeOfDay = "afternoon"
+			styles.color = "#8914A3"   //can add any property to object
+		  } else {
+			timeOfDay = "night"
+			styles.color = "#D90000"    //can add any property to object
+		  }
+		  
+		  return (
+			<h1 style={styles}>Good {timeOfDay}!</h1>
+		  )
+		}
+
+		ReactDOM.render(<App />, document.getElementById("root"))
+
+**************************************************************
+React Props Part 1: Understanding the Concept
+
+<input placeholder="firstName'> //placeholder is  attributes/property
+
+
+
+****************************************************
+React Props 
+
+props is an object that has all properties 
+
+
+-------------------
+		App.js
+
+		import React from "react"
+		import ContactCard from "./ContactCard"
+
+		function App() {
+			return (
+				<div className="contacts">
+					<ContactCard 
+						name="Mr. Whiskerson" 
+						imgUrl="http://placekitten.com/300/200" 
+						phone="(212) 555-1234" 
+						email="mr.whiskaz@catnap.meow"
+					/>
+					
+					<ContactCard 
+						name="Fluffykins" 
+						imgUrl="http://placekitten.com/400/200" 
+						phone="(212) 555-2345" 
+						email="fluff@me.com"
+					/>
+					
+					<ContactCard 
+						name="Destroyer" 
+						imgUrl="http://placekitten.com/400/300" 
+						phone="(212) 555-3456" 
+						email="ofworlds@yahoo.com"
+					/>
+					
+					<ContactCard 
+						name="Felix" 
+						imgUrl="http://placekitten.com/200/100" 
+						phone="(212) 555-4567" 
+						email="thecat@hotmail.com"
+					/>
+					
+				</div>
+			)
+		}
+
+		export default App
+
+
+---------------------------------------------------------------
+ContactCard.js
+
+
+		import React from "react"
+
+		function ContactCard(props) {
+			return (
+				<div className="contact-card">
+					<img src={props.imgUrl}/>
+					<h3>{props.name}</h3>
+					<p>Phone: {props.phone}</p>
+					<p>Email: {props.email}</p>
+				</div>
+			)
+		}
+
+		export default ContactCard
+
+
+
+
+**************************************************************************************
+
+
+exapmle 2	
+
+Here we are sending property as a object of contact.
+-------------
+ContactCard.ts
+
+			import React from "react"
+
+function ContactCard(props) {
+    console.log(props)
+    return (
+        <div className="contact-card">
+            <img src={props.contact.imgUrl}/>
+            <h3>{props.contact.name}</h3>
+            <p>Phone: {props.contact.phone}</p>
+            <p>Email: {props.contact.email}</p>
+        </div>
+    )
+}
+
+export default ContactCard
+
+
+----------------------
+App.js
+
+import React from "react"
+import ContactCard from "./ContactCard"
+
+function App() {
+    return (
+        <div className="contacts">
+            <ContactCard 
+					
+					//contact is object we use {{}}  javscript code for single {} and double {{}} for object.
+					
+                contact={{name: "Mr. Whiskerson", imgUrl: "http://placekitten.com/300/200", phone: "(212) 555-1234", email: "mr.whiskaz@catnap.meow"}}
+            />
+            
+            <ContactCard 
+                contact={{name: "Fluffykins", imgUrl: "http://placekitten.com/400/200", phone: "(212) 555-2345", email: "fluff@me.com"}}
+            />
+            
+            <ContactCard
+                contact={{name: "Destroyer", imgUrl: "http://placekitten.com/400/300", phone: "(212) 555-3456", email: "ofworlds@yahoo.com"}}
+            />
+            
+            <ContactCard 
+                contact={{name: "Felix", imgUrl: "http://placekitten.com/200/100", phone: "(212) 555-4567", email: "thecat@hotmail.com"}}
+            />
+            
+        </div>
+    )
+}
+
+export default App
+
+
+
+
+*******************************************************************************
+
+
+import React from "react"
+
+function Joke(props) {
+    return (
+        <div>
+            <h3 style={{display: !props.question && "none"}}>Question: {props.question}</h3>  //if question not prsent display nothing
+            <h3 style={{color: !props.question && "#888888"}}>Answer: {props.punchLine}</h3>  //if question not present display ans in grey
+            <hr/>
+        </div>
+    )
+}
+
+export default Joke
+
+
+*****************************************************************************************
+Mapping Components in React
+
+
+exapmle:
+
+			function App() {
+				const nums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+				const doubled = nums.map(function(num) {         //map allows us to do anything to each index value
+					return num * 2									
+				})	
+				console.log(doubled)					//[2,4,6......]
+				
+				
+----------------------------
+-IMPORTANT exapmle
+
+
+jokeData.js     //we are using this file as Api which gives us array of question and punchLine
+
+
+const jokesData = [
+    {
+        id: 1,
+        punchLine: "It’s hard to explain puns to kleptomaniacs because they always take things literally."
+    },
+    {
+        id: 2,
+        question: "What's the best thing about Switzerland?",
+        punchLine: "I don't know, but the flag is a big plus!"
+    }
+]
+
+export default jokesData
+
+--------------
+joke.js
+
+import React from "react"
+
+import Joke from "./Joke"
+import jokesData from "./jokesData"
+
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findindex
+
+function App() {
+    const jokeComponents = jokesData.map(joke => <Joke key={joke.id}          //Arrow function .we use "key" keyword for warning in uniqueness.
+	question={joke.question} punchLine={joke.punchLine} />)
+
+    return (
+        <div>
+            {jokeComponents}            
+        </div>
+    )
+
+			OR
+			
+function App() {
+    jokesData.map((joke) => {
+        return <Joke question={joke.question} punchLine={joke.punchLine} />
+    })
+    
+    return (
+        <div>
+            {jokeComponents}            
+        </div>
+    )
+}
+
+export default App	
+				
+
+*****************************************************************************************************************
+The filter() method creates a new array with all elements that pass the test implemented by the provided function.
+
+const words = ['spray', 'limit', 'elite', 'exuberant', 'destruction', 'present'];
+
+const result = words.filter(word => word.length > 6);
+
+console.log(result);
+// expected output: Array ["exuberant", "destruction", "present"]
+--------------------------------------------
+
+The map() method creates a new array populated with the results of calling a provided function on every element in the calling array
+
+const array1 = [1, 4, 9, 16];
+
+// pass a function to map
+const map1 = array1.map(x => x * 2);
+
+console.log(map1);
+// expected output: Array [2, 8, 18, 32]
+---------------------------------------------
+
+The sort() method sorts the elements of an array in place and returns the sorted array. The default sort order is ascending, built upon converting the elements into strings, then comparing their sequences of UTF-16 code units values.
+
+The time and space complexity of the sort cannot be guaranteed as it depends on the implementation
+
+const months = ['March', 'Jan', 'Feb', 'Dec'];
+months.sort();
+console.log(months);
+// expected output: Array ["Dec", "Feb", "Jan", "March"]
+
+const array1 = [1, 30, 4, 21, 100000];
+array1.sort();
+console.log(array1);
+// expected output: Array [1, 100000, 21, 30, 4]
+
+
+
+
+var numbers = [4, 2, 5, 1, 3];
+numbers.sort(function(a, b) {
+  return a - b;
+});
+console.log(numbers);
+
+// [1, 2, 3, 4, 5]
+
+
+---------------------------------
+The reduce() method executes a reducer function (that you provide) on each element of the array, resulting in single output value
+
+const array1 = [1, 2, 3, 4];
+const reducer = (accumulator, currentValue) => accumulator + currentValue;
+
+// 1 + 2 + 3 + 4
+console.log(array1.reduce(reducer));
+// expected output: 10
+
+// 5 + 1 + 2 + 3 + 4
+console.log(array1.reduce(reducer, 5));
+// expected output: 15
+
+
+------------------------------
+
+The every() method tests whether all elements in the array pass the test implemented by the provided function.
+ It returns a Boolean value.
+
+const isBelowThreshold = (currentValue) => currentValue < 40;
+
+const array1 = [1, 30, 39, 29, 10, 13];
+
+console.log(array1.every(isBelowThreshold));
+// expected output: true
+-----------------------------------------
+
+The some() method tests whether at least one element in the array passes the test implemented by the provided
+ function. It returns a Boolean value.
+
+const array = [1, 2, 3, 4, 5];
+
+// checks whether an element is even
+const even = (element) => element % 2 === 0;
+
+console.log(array.some(even));
+// expected output: true
+---------------------------------------------------
+
+The find() method returns the value of the first element in the provided array that satisfies the provided 
+testing function.
+
+const array1 = [5, 12, 8, 130, 44];
+
+const found = array1.find(element => element > 10);
+
+console.log(found);
+// expected output: 12
+
+-------------------------------------------------------
+The findIndex() method returns the index of the first element in the array that satisfies the provided testing 
+function. 
+Otherwise, it returns -1, indicating that no element passed the test.
+
+const array1 = [5, 12, 8, 130, 44];
+
+const isLargeNumber = (element) => element > 13;
+
+console.log(array1.findIndex(isLargeNumber));
+// expected output: 3
+
+*********************************************************************************************
+
+
+
+Example 2
+		App.js
+
+				import React from "react"
+		import Product from "./Product"
+		import productsData from "./vschoolProducts"
+
+		function App() {
+			const productComponents = productsData.map(item => <Product key={item.id} product={item}/>)    //sending whole object
+			
+			return (
+				<div>
+					{productComponents}
+				</div>
+			)
+		}
+
+		export default App
+		
+		
+-------------------------------
+				
+				Product.js
+				
+				import React from "react"
+
+		function Product(props) {
+			return (
+				<div>
+					<h2>{props.product.name}</h2>
+					<p>{props.product.price.toLocaleString("en-US", { style: "currency", currency: "USD" })} - {props.product.description}</p>
+				</div>
+			)
+		}
+
+		export default Product
+
+*****************************************************************************
+*********************IMPORTANT***************************
+Todoitems.js
+
+			import React from "react"
+
+			function TodoItem(props) {
+				  console.log(props.item)
+				return (
+				  
+					<div className="todo-item">
+						<input type="checkbox" />
+						<p>{props.item.text}</p>
+					</div>
+				)
+			}
+
+			export default TodoItem
+
+
+----------------------------------
+App.js
+
+			import React from "react"
+			import TodoItem from "./TodoItem"
+			import todosData from "./todosData"
+
+			function App() {
+				const todoItems = todosData.map(item => <TodoItem key={item.id} item={item}/>)    //we are sending whole object i.e item
+				
+				return (
+					<div className="todo-list">
+						{todoItems}
+					</div>
+				)
+			}
+
+			export default App
+
+
+
+*********************************************************************************
+
+
+
+
+
+Topic  :Class-based Components
+
+--------------------------
+
+index.js
+
+import React from "react"
+import ReactDOM from "react-dom"
+
+import App from "./App"
+
+ReactDOM.render(<App />, document.getElementById("root"))
+
+
+
+App.js
+
+import React from "react"
+
+// function App(props) {     						 //Earlier
+//     return (
+//         <div>
+//             <h1>{props.whatever}</h1>
+//         </div>
+//     )
+// }
+
+class App extends React.Component {
+    
+    yourMethodHere() {
+        
+    }
+    
+    render() {													//imp render is method now
+        return (
+            <div>
+                <h1>{this.props.whatever}</h1>						///imp always use this.props now onwards.
+            </div>
+        )
+    }
+}
+
+export default App
+
+
+*************************************************************************
+
+
+Example 
+
+									index.js
+									
+						/*
+
+						Challenge:
+						1. Convert all 3 components to be class-based
+						2. Fix the small bug
+
+						*/
+
+						import React, {Component} from "react"
+						import ReactDOM from "react-dom"
+
+						// #1
+						class App extends React.Component {
+							render() {
+								return (
+									<div>
+										<Header username="vschool"/>
+										<Greeting />
+									</div>
+								)    
+							}
+						}
+
+						// #2
+						class Header extends React.Component {
+							render() {
+								return (
+									<header>
+										<p>Welcome, {this.props.username}!</p>
+									</header>
+								)    
+							}
+						}
+
+						// #3
+						class Greeting extends Component {
+							render() {
+								const date = new Date()
+								const hours = date.getHours()
+								let timeOfDay
+								
+								if (hours < 12) {
+									timeOfDay = "morning"
+								} else if (hours >= 12 && hours < 17) {
+									timeOfDay = "afternoon"
+								} else {
+									timeOfDay = "night"
+								}
+								return (
+									<h1>Good {timeOfDay} to you, sir or madam!</h1>
+								)
+							}
+						}
+
+						ReactDOM.render(<App />, document.getElementById("root"))
+	
+
+
+*******************************************************************************************
+
+
+Topic:React State
+
+
+props are immutable.
+Only we can pass value from 1 component to another is throughs props.
+While writing constructor always write super.
+If we import React then extend class by React.Component 
+If we import React,{Component} then extend class only by Component
+
+
+import React from "react"
+import ChildComponent from "./ChildComponent"
+// https://scrimba.com/p/p4Mrt9/cQnMDHD
+
+						App.js
+
+				class App extends React.Component {
+					constructor() {
+						super()
+						this.state = {
+							question:"why?",
+							answer: "Yes"
+							
+						}
+					}
+					
+					render() {
+						return (
+							<div>
+								<h1>Is state important to know? {this.state.answer}</h1>
+								<h1>Is state important to know? {this.state.question}</h1>
+								<ChildComponent answer={this.state.answer}/>
+							</div>
+						)
+					}
+				}
+
+				export default App
+				
+				------------------------
+				ChildComponent.js
+				
+				import React from "react";
+
+					function ChildComponent(props){
+						console.log(props);
+						return (
+							
+							<h3>{props.answer}</h3>    
+							
+						)
+						
+					}
+
+
+					export default ChildComponent;
+					
+					
+*******************************************************************
+
+
+Example 2.
+				
+				import React from "react";
+
+	class App extends React.Component{
+		constructor(){
+			
+			super();
+			this.state={
+						isLoggedIn:false
+						}    
+					}
+		render(){
+			let word=" ";
+			if(this.state.isLoggedIn)
+			{
+				word="in";
+			}
+			else {word="out"}
+			
+			return(
+				<h3>You are logged{word}</h3>
+				
+				)	
+		}	
+	}
+	export default App;
+
+	************************************************************************
+	App.js
+				/*
+			In the previous iteration of this todo list app, we pulled in todos data from a JSON file and mapped over it to display the todo items.
+
+			Eventually we'll want to be able to modify the data, which will only happen if we've "loaded" the data in to the component's state
+
+			Challenge: Change the <App /> component into a stateful class component and load the imported `todosData` into state.
+			*/
+
+			import React from "react"
+			import TodoItem from "./TodoItem"
+			import todosData from "./todosData"
+
+			class App extends React.Component {
+				constructor() {
+					super()
+					this.state = {
+						todos: todosData
+					}
+				}
+				
+				render() {
+					const todoItems = this.state.todos.map(item => <TodoItem key={item.id} item={item}/>)
+					
+					return (
+						<div className="todo-list">
+							{todoItems}
+						</div>
+					)    
+				}
+			}
+
+			export default App
+			
+**************************************************************************************
+
+
+Topic:Handling Events in React
+
+
+App.js
+		import React from "react"
+
+		function handleClick() {
+			console.log("I was clicked")
+		}
+
+		// https://reactjs.org/docs/events.html#supported-events
+
+		function App() {
+			return (
+				<div>
+					<img onMouseOver={() => console.log("Hovered!")} src="https://www.fillmurray.com/200/100"/>
+					<br />
+					<br />
+					<button onClick={handleClick}>Click me</button>
+				</div>
+			)
+		}
+
+		export default App
+
+
+**********************************************************
+*************IMPORTANT**************
+
+Topic : React setState: Changing the State
+
+
+	setState method comes from React.Component so we have to bind it with class in Constructor.
+	
+	
+	
+	
+	import React from "react"
+
+class App extends React.Component {
+    constructor() {
+        super()
+        this.state = {
+            count: 0
+        }
+        this.handleClick = this.handleClick.bind(this)
+    }
+    
+    handleClick() {
+        this.setState(prevState => {
+            return {
+                count: prevState.count + 1
+            }
+        })
+    }
+    
+    render() {
+        return (
+            <div>
+                <h1>{this.state.count}</h1>
+                <button onClick={this.handleClick}>Change!</button>
+            </div>
+        )
+    }
+}
+
+export default App
+
+
+******************************************
+35 very very important
+
+App.js
+
+			/**
+ * Let's make it so our checkbox can actually mark our todo as complete or incomplete!
+ * This challenge is a little more involved than some of the past ones. Check the comments 
+ * in the code for some help on accomplishing this one
+ * 
+ * Challenge: 
+ * 1. Create an event handler in the App component for when the checkbox is clicked (which is an `onChange` event)
+ *    a. This method will be the trickest part. Check the comments in the stubbed-out method below for some pseudocode to help guide you through this part
+ * 2. Pass the method down to the TodoItem component
+ * 3. In the TodoItem component, make it so when the `onChange` event happens, it calls the `handleChange` method and passes the id of the todo into the function
+ */
+
+import React from "react"
+import TodoItem from "./TodoItem"
+import todosData from "./todosData"
+
+class App extends React.Component {
+    constructor() {
+        super()
+        this.state = {
+            todos: todosData
+        }
+        this.handleChange = this.handleChange.bind(this)
+    }
+    
+    handleChange(id) {
+        this.setState(prevState => {
+            const updatedTodos = prevState.todos.map(todo => {
+                if (todo.id === id) {
+                    return {											//never change the previosu state hence we are returning new object
+                        ...todo,
+                        completed: !todo.completed
+                    }
+                }
+                return todo
+            })
+            console.log(prevState.todos)
+            console.log(updatedTodos)
+            return {
+                todos: updatedTodos
+            }
+        })
+    }
+    
+    render() {
+        const todoItems = this.state.todos.map(item => <TodoItem key={item.id} item={item} handleChange={this.handleChange}/>)
+        
+        return (
+            <div className="todo-list">
+                {todoItems}
+            </div>
+        )    
+    }
+}
+
+export default App
+
+
+-----------------------------------
+TodoItem.js
+
+
+import React from "react"
+
+function TodoItem(props) {
+    return (
+        <div className="todo-item">
+            <input 
+                type="checkbox" 
+                checked={props.item.completed} 
+                onChange={() => props.handleChange(props.item.id)}
+            />
+            <p>{props.item.text}</p>
+        </div>
+    )
+}
+
+export default TodoItem
+
+**********************************************************************************
+
+Topic : REact Lifecycle Methods
+
+
+render()
+
+compenentDidMount()   
+   //Api call
+
+componentWilReceiveProps()
+
+shouldComponentUpate()
+//whether u need to change clothes
+
+componentWillUnmount()
+//cleanup
+
+------------
+App.js
+
+import React, {Component} from "react"
+
+// https://engineering.musefind.com/react-lifecycle-methods-how-and-when-to-use-them-2111a1b692b1
+// https://reactjs.org/blog/2018/03/29/react-v-16-3.html#component-lifecycle-changes
+
+class TodoList extends Component {
+    constructor() {
+        super()
+        this.state = {}
+    }
+    
+    static getDerivedStateFromProps(props, state) {
+        // return the new, updated state based upon the props
+        // https://reactjs.org/docs/react-component.html#static-getderivedstatefromprops
+        // https://reactjs.org/blog/2018/06/07/you-probably-dont-need-derived-state.html
+    }
+    
+    getSnapshotBeforeUpdate() {
+        // create a backup of the current way things are
+        // https://reactjs.org/docs/react-component.html#getsnapshotbeforeupdate
+    }
+    
+    // componentWillMount() {
+        
+    // }
+    
+    componentDidMount() {
+        // GET the data I need to correctly display
+    }
+    
+    // componentWillReceiveProps(nextProps) {
+    //     if (nextProps.whatever !== this.props.whatever) {
+    //         // do something important here
+    //     }
+    // }
+    
+    shouldComponentUpdate(nextProps, nextState) {
+        // return true if want it to update
+        // return false if not
+    }
+    
+    // componentWillUpdate() {
+        
+    // }
+    
+    componentWillUnmount() {
+        // teardown or cleanup your code before your component disappears
+        // (E.g. remove event listeners)
+    }
+    
+    render() {
+        return (
+            <div>
+                Code goes here
+            </div>
+        )
+    }
+}
+
+export default App
+
+
+
+*******************************************
+Topic:  Lifecycle Methods Part 3 - componentDidUpdate
+
+// https://scrimba.com/g/greacthooks
+// Uncaught Invariant Violation: Maximum update depth exceeded. This can happen when a component repeatedly calls setState inside componentWillUpdate or componentDidUpdate. React limits the number of nested updates to prevent infinite loops.
+
+import React from "react"
+import randomcolor from "randomcolor"
+
+class App extends React.Component {
+    constructor() {
+        super()
+        this.state = {
+            count: 0,
+            color: ""
+        }
+        this.increment = this.increment.bind(this)
+        this.decrement = this.decrement.bind(this)
+    }
+    
+    increment() {
+        this.setState(prevState => {
+            return {
+                count: prevState.count + 1
+            }
+        })
+    }
+    decrement() {
+        this.setState(prevState => {
+            return {
+                count: prevState.count - 1
+            }
+        })
+    }
+    
+    componentDidUpdate(prevProps, prevState) {
+        if(prevState.count !== this.state.count) {
+            const newColor = randomcolor()
+            this.setState({color: newColor})
+        }
+    }
+    
+    render() {
+        return (
+            <div>
+                <h1 style={{color: this.state.color}}>{this.state.count}</h1>
+                <button onClick={this.increment}>
+                    Increment!
+                </button>
+                <button onClick={this.decrement}>
+                    Decrement!
+                </button>
+            </div>
+        )
+    }
+}
+
+export default App
+*******************************************************
+
+Topic : React Conditional Render
+
+App.js
+
+import React, {Component} from "react"
+import Conditional from "./Conditional"
+
+class App extends Component {
+    constructor() {
+        super()
+        this.state = {
+            isLoading: true
+        }
+    }
+    
+    componentDidMount() {
+        setTimeout(() => {
+            this.setState({
+                isLoading: false
+            })
+        }, 1500)
+    }
+    
+    render() {
+        return (
+            <div>
+                {this.state.isLoading ? <h1>Loading... </h1> : <Conditional />}
+            </div>
+        )
+    }
+}
+
+export default App
+
+-----------------------------
+Conditional.js
+
+import React from "react"
+
+function Conditional(props) {
+    return <h1>Some cool stuff about conditional rendering</h1>
+}
+
+export default Conditional
+
+*******************************************************************************
+
+
+same as above of App.js
+
+just && operator instead of ternary .In react && operator works like (if left is true it will return right side ,if left is false it will retrun left side)
+
+
+class App extends Component {
+    constructor() {
+        super()
+        this.state = {
+            unreadMessages: ["a", "b"]
+        }
+    }
+
+  render() {
+        return (
+            <div>
+                {
+                    this.state.unreadMessages.length > 0 && 
+                    <h2>You have {this.state.unreadMessages.length} unread messages!</h2>
+                }
+            </div>
+        )
+    }
+
+*****************************************************************************************
+
+Example
+
+
+import React from "react"
+
+/*
+Challenge:
+
+Given a stateless functional component:
+1. Follow the steps necessary to add state to it,
+    // class-based component
+    // constructor method
+2. Have state keep track of whether the user is logged in or not
+    // isLoggedIn: Boolean (true or false)
+3. Add a button that logs the user in/out
+    // event listener (onClick)
+    a. extra challenge - make the button display "log in" if they're not logged in and "log out" if they are
+        // Conditional Rendering
+4. Display text that says "Logged in" if the user is logged in, or "Logged out" if they're not.
+    // Conditional Rendering
+*/
+
+class App extends React.Component {
+    constructor() {
+        super()
+        this.state = {
+            isLoggedIn: false
+        }
+        this.handleClick = this.handleClick.bind(this)
+    }
+    
+    handleClick() {
+        this.setState(prevState => {
+            return {
+                isLoggedIn: !prevState.isLoggedIn
+            }
+        })
+    }
+    
+    render() {   
+        let buttonText = this.state.isLoggedIn ? "LOG OUT" : "LOG IN"
+        let displayText = this.state.isLoggedIn ? "Logged in" : "Logged out"
+        return (
+            <div>
+                <button onClick={this.handleClick}>{buttonText}</button>
+                <h1>{displayText}</h1>
+            </div>
+        )
+    }
+}
+
+export default App
+
+
+**************************************************************
+
+Todo App 
+
+
+TodoItem.js
+
+/**
+ * Challenge: Style the completed todo items differently from the incomplete items.
+ */
+
+import React from "react"
+
+function TodoItem(props) {
+    const completedStyle = {
+        fontStyle: "italic",
+        color: "#cdcdcd",
+        textDecoration: "line-through"
+    }
+    
+    return (
+        <div className="todo-item">
+            <input 
+                type="checkbox" 
+                checked={props.item.completed} 
+                onChange={() => props.handleChange(props.item.id)}
+            />
+            <p style={props.item.completed ? completedStyle: null}>{props.item.text}</p>
+        </div>
+    )
+}
+
+export default TodoItem
+
+*****************************************************************
+
+
+Topic:   API Update: Please watch before proceeding
+
+
+
+// https://swapi.co/ (old)
+// https://swapi.dev/
+
+
+
+
+******************************
+IMPORTANT
+
+
+fetch
+
+
+import React, {Component} from "react"
+
+// https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch
+// https://swapi.co/
+// https://medium.com/javascript-scene/master-the-javascript-interview-what-is-a-promise-27fc71e77261
+
+class App extends Component {
+    constructor() {
+        super()
+        this.state = {
+            loading: false,
+            character: {}
+        }
+    }
+    
+    componentDidMount() {
+        this.setState({loading: true})
+        fetch("https://swapi.dev/api/people/1/")
+            .then(response => response.json())
+            .then(data => {
+                this.setState({
+                    loading: false,
+                    character: data
+                })
+            })
+    }
+    
+    render() {
+        const text = this.state.loading ? "loading..." : this.state.character.name
+        return (
+            <div>
+                <p>{text}</p>
+            </div>
+        )
+    }
+}
+
+export default App
+
+
+**************************************************************************
+
+React Forms Part 1
+
+
+import React, {Component} from "react"
+
+class App extends Component {
+    constructor() {
+        super()
+        this.state = {
+            firstName: "",
+            lastName: ""
+        }
+        this.handleChange = this.handleChange.bind(this)
+    }
+    
+	1 st way-----
+    handleChange(event) {
+        this.setState({
+            [event.target.name]: event.target.value
+        })
+    }
+	
+					OR
+	2nd way 
+		handleChange(event) {
+        const {name, value} = event.target
+        this.setState({
+            [name]: value
+        })
+    }
+    ----
+    render() {
+        return (
+            <form>
+                <input 
+                    type="text" 
+                    value={this.state.firstName} 
+                    name="firstName" 
+                    placeholder="First Name" 
+                    onChange={this.handleChange} 
+                />
+                <br />
+                <input 
+                    type="text" 
+                    value={this.state.lastName} 
+                    name="lastName" 
+                    placeholder="Last Name" 
+                    onChange={this.handleChange} 
+                />
+                <h1>{this.state.firstName} {this.state.lastName}</h1>
+            </form>
+        )
+    }
+}
+
+export default App
+---------------------------------------------------------------
+***************************************************************
+
+import React, {Component} from "react"
+
+class App extends Component {
+    constructor() {
+        super()
+        this.state = {
+            firstName: "",
+            lastName: "",
+            isFriendly: false,
+            gender: "",
+            favColor: "blue"
+        }
+        this.handleChange = this.handleChange.bind(this)
+    }
+    
+    handleChange(event) {
+        const {name, value, type, checked} = event.target
+        type === "checkbox" ? this.setState({ [name]: checked }) : this.setState({ [name]: value })
+    }
+    
+    render() {
+        return (
+            <form onSubmit={this.handleSubmit}>
+                <input 
+                    type="text" 
+                    value={this.state.firstName} 
+                    name="firstName" 
+                    placeholder="First Name" 
+                    onChange={this.handleChange} 
+                />
+                <br />
+                <input 
+                    type="text" 
+                    value={this.state.lastName} 
+                    name="lastName" 
+                    placeholder="Last Name" 
+                    onChange={this.handleChange} 
+                />
+                
+                {
+                    /**
+                     * Other useful form elements:
+                     * 
+                     *  <textarea /> element
+                     *  <input type="checkbox" />
+                     *  <input type="radio" />
+                     *  <select> and <option> elements
+                     */
+                }
+                
+                <textarea 
+                    value={"Some default value"}
+                    onChange={this.handleChange}
+                />
+                
+                <br />
+                
+                <label>
+                    <input 
+                        type="checkbox" 
+                        name="isFriendly"
+                        checked={this.state.isFriendly}
+                        onChange={this.handleChange}
+                    /> Is friendly?
+                </label>
+                <br />
+                <label>
+                    <input 
+                        type="radio" 
+                        name="gender"
+                        value="male"
+                        checked={this.state.gender === "male"}
+                        onChange={this.handleChange}
+                    /> Male
+                </label>
+                <br />
+                <label>
+                    <input 
+                        type="radio" 
+                        name="gender"
+                        value="female"
+                        checked={this.state.gender === "female"}
+                        onChange={this.handleChange}
+                    /> Female
+                </label>
+                {/* Formik */}
+                <br />
+                
+                <label>Favorite Color:</label>
+                <select 
+                    value={this.state.favColor}
+                    onChange={this.handleChange}
+                    name="favColor"
+                >
+                    <option value="blue">Blue</option>
+                    <option value="green">Green</option>
+                    <option value="red">Red</option>
+                    <option value="orange">Orange</option>
+                    <option value="yellow">Yellow</option>
+                </select>
+                
+                <h1>{this.state.firstName} {this.state.lastName}</h1>
+                <h2>You are a {this.state.gender}</h2>
+                <h2>Your favorite color is {this.state.favColor}</h2>
+                <button>Submit</button>
+            </form>
+        )
+    }
+}
+
+export default App
+***********************************************************************************************************
+TOpic:React Container & Component Architecture
+
+
+FormContainer.js
+
+import React, {Component} from "react"
+import FormComponent from "./FormComponent"
+
+class Form extends Component {
+    constructor() {
+        super()
+        this.state = {
+            firstName: "",
+            lastName: "",
+            age: "",
+            gender: "",
+            destination: "",
+            isVegan: false,
+            isKosher: false,
+            isLactoseFree: false
+        }
+        this.handleChange = this.handleChange.bind(this)
+    }
+    
+    handleChange(event) {
+        const {name, value, type, checked} = event.target
+        type === "checkbox" ? 
+            this.setState({
+                [name]: checked
+            })
+        :
+        this.setState({
+            [name]: value
+        }) 
+    }
+    
+    render() {
+        return(
+            <FormComponent
+                handleChange={this.handleChange}
+                data={this.state}
+            />
+        )
+    }
+}
+
+export default Form
+-------------------------------------------
+
+
+FormComponent.js
+
+import React from "react"
+
+function FormComponent(props) {
+    return (
+        <main>
+            <form>
+                <input 
+                    name="firstName" 
+                    value={props.data.firstName} 
+                    onChange={props.handleChange} 
+                    placeholder="First Name" 
+                />
+                <br />
+                
+                <input 
+                    name="lastName" 
+                    value={props.data.lastName}
+                    onChange={props.handleChange} 
+                    placeholder="Last Name" 
+                />
+                <br />
+                
+                <input 
+                    name="age" 
+                    value={props.data.age}
+                    onChange={props.handleChange} 
+                    placeholder="Age" 
+                />
+                <br />
+                
+                <label>
+                    <input 
+                        type="radio" 
+                        name="gender"
+                        value="male"
+                        checked={props.data.gender === "male"}
+                        onChange={props.handleChange}
+                    /> Male
+                </label>
+                
+                <br />
+                
+                <label>
+                    <input 
+                        type="radio" 
+                        name="gender"
+                        value="female"
+                        checked={props.data.gender === "female"}
+                        onChange={props.handleChange}
+                    /> Female
+                </label>
+                
+                <br />
+                
+                <select 
+                    value={props.data.destination} 
+                    name="destination" 
+                    onChange={props.handleChange}
+                >
+                    <option value="">-- Please Choose a destination --</option>
+                    <option value="germany">Germany</option>
+                    <option value="norway">Norway</option>
+                    <option value="north pole">North Pole</option>
+                    <option value="south pole">South Pole</option>
+                </select>
+                
+                <br />
+                
+                <label>
+                    <input 
+                        type="checkbox"
+                        name="isVegan"
+                        onChange={props.handleChange}
+                        checked={props.data.isVegan}
+                    /> Vegan?
+                </label>
+                <br />
+                
+                <label>
+                    <input 
+                        type="checkbox"
+                        name="isKosher"
+                        onChange={props.handleChange}
+                        checked={props.data.isKosher}
+                    /> Kosher?
+                </label>
+                <br />
+                
+                <label>
+                    <input 
+                        type="checkbox"
+                        name="isLactoseFree"
+                        onChange={props.handleChange}
+                        checked={props.data.isLactoseFree}
+                    /> Lactose Free?
+                </label>
+                <br />
+                
+                <button>Submit</button>
+            </form>
+            <hr />
+            <h2>Entered information:</h2>
+            <p>Your name: {props.data.firstName} {props.data.lastName}</p>
+            <p>Your age: {props.data.age}</p>
+            <p>Your gender: {props.data.gender}</p>
+            <p>Your destination: {props.data.destination}</p>
+            <p>Your dietary restrictions:</p>
+            
+            <p>Vegan: {props.data.isVegan ? "Yes" : "No"}</p>
+            <p>Kosher: {props.data.isKosher ? "Yes" : "No"}</p>
+            <p>Lactose Free: {props.data.isLactoseFree ? "Yes" : "No"}</p>
+            
+        </main>
+    )
+}
+
+export default FormComponent
+
+---------------------------------------------------------------------------
+App.js
+
+
+// https://medium.com/@dan_abramov/smart-and-dumb-components-7ca2f9a7c7d0
+
+import React, {Component} from "react"
+import Form from "./FormContainer"
+
+function App() {
+    return (
+        <Form />
+    )
+}
+
+export default App
+********************************************************************************************
+
+
+React Hooks
+
+"Hook into" state and lifecycle methods of components without using classes.
+Only use functional components across the board
+Improve readability and organization of components.
+useState always returns array with 2 values
+1 st is current value and 2nd is the function to which we have to change the current value.
+
+**************
+useState()
+
+import React, {useState} from "react"
+
+function App() {
+    const [answer] = useState("Yes")
+    return (
+        <div>
+            <h1>Is state important to know? {answer}</h1>
+        </div>
+    )
+}
+
+// class App extends React.Component {
+//     constructor() {
+//         super()
+//         this.state = {
+//             answer: "Yes"
+//         }
+//     }
+    
+//     render() {
+//         return (
+//             <div>
+//                 <h1>Is state important to know? {this.state.answer}</h1>
+//             </div>
+//         )
+//     }
+// }
+
+export default App
+
+******************************************
+App.js
+
+function App() {
+    const [count, setCount] = useState(0)
+    
+    
+    function increment() {
+        setCount(prevCount => prevCount + 1)
+    }
+    
+    function decrement() {
+        setCount(prevCount => prevCount - 1)
+    }
+    
+    return (
+        <div>
+            <h1>{count}</h1>
+            <button onClick={increment}>Increment</button>
+            <button onClick={decrement}>Decrement</button>
+        </div>
+    )
+}
+
+**************************************************
+
+Topic:  useEffect() Part 1
+
+consider replacement for 
+*componentDidMount
+*componentDidUpdate
+*componentWillUnMount
+
+
+import React, {useState, useEffect} from "react"
+import randomcolor from "randomcolor"
+
+function App() {
+    const [count, setCount] = useState(0)  //if we call here 1 function it runs all time 
+	OR
+	const [count,setCount]=useState(()=>{
+		console.log("only runs 1 time");			//use functional version for computing only 1 time
+														//runs only 1st time 
+		return 0;
+	})      
+	
+	
+    const [color, setColor] = useState("")
+    
+    function increment() {
+        setCount(prevCount => prevCount + 1)
+    }
+    
+    function decrement() {
+        setCount(prevCount => prevCount - 1)
+    }
+    
+    useEffect(() => {
+        setColor(randomcolor())
+    }, [count])
+    
+    return (
+        <div>
+            <h1 style={{color: color}}>{count}</h1>
+            <button onClick={increment}>Increment</button>
+            <button onClick={decrement}>Decrement</button>
+        </div>
+    )
+}
+
+export default App
+*****************************************
+import React, {useState, useEffect} from "react"
+import randomcolor from "randomcolor"
+
+function App() {
+    const [count, setCount] = useState(0)
+    const [color, setColor] = useState("")
+    
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            // setCount(prevCount => prevCount + 1)
+        }, 1000)
+        return () => clearInterval(intervalId)
+    }, [])
+    
+    useEffect(() => {
+        setColor(randomcolor())
+    }, [count])    //onComponentupdate
+    
+    return (
+        <div>
+            <h1 style={{color: color}}>{count}</h1>
+        </div>
+    )
+}
+
+export default App
+********************************
+
+
+
+
+
+**useState**
+
+function App(){
+const [state,setState]=useState({count:4,theme:'blue'})
+const count =state.count
+const theme=state.theme
+
+function dec(){
+setState(prevState=>{
+return {...prevState.count:prevState.count-1}  //we are using spread operator bcoz if we dont use then it will update the whole object and make it {count:5} and override the earlier {count:4,theme:blue} insted use 2 diff hooks
+
+
+
+})
+}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Summary
+
+JSx
+functional and class component
+Props
+conditional rendering 
+css (className)
+state(hold and modify data)
+Forms
+

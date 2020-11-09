@@ -1,0 +1,643 @@
+backend NodeJS
+Front React
+
+GraphQl is a powerful query lang
+
+
+Client------------------->Server
+       <-----------------
+
+Allows for a more flexible & efficient approach than REST
+
+
+{
+	book(id:123){
+	title
+	genre
+	reviews
+	author{
+		name
+		bio
+		books{
+		name
+			}
+		}
+	}
+}
+
+GraphQl
+
+
+App.js
+
+const express = require('express');
+const graphqlHTTP = require('express-graphql');
+const schema = require('./schema/schema');
+
+const app = express();
+
+// bind express with graphql
+app.use('/graphql', graphqlHTTP({
+    schema,
+    graphiql: true
+}));
+
+app.listen(4000, () => {
+    console.log('now listening for requests on port 4000');
+});
+
+
+
+----------------------
+
+schema/schema.js
+
+const graphql = require('graphql');
+const _ = require('lodash');
+
+const { GraphQLObjectType, GraphQLString, GraphQLSchema } = graphql;    //ES6 syantax of getting data from graphql
+
+// dummy data
+var books = [
+    { name: 'Name of the Wind', genre: 'Fantasy', id: '1' },
+    { name: 'The Final Empire', genre: 'Fantasy', id: '2' },
+    { name: 'The Long Earth', genre: 'Sci-Fi', id: '3' },
+];
+
+const BookType = new GraphQLObjectType({								   //Type
+    name: 'Book',
+    fields: ( ) => ({
+        id: { type: GraphQLString },
+        name: { type: GraphQLString },
+        genre: { type: GraphQLString }
+    })
+});
+
+const RootQuery = new GraphQLObjectType({							//it Finds book by id
+    name: 'RootQueryType',
+    fields: {
+        book: {
+            type: BookType,
+            args: { id: { type: GraphQLString } },
+            resolve(parent, args){                           //resolve functn =looking at actual data and returns what is needed
+                // code to get data from db / other source
+                return _.find(books, { id: args.id });                  //for find we have to import lodash//books is array of objects
+            }
+        }
+    }
+});
+
+module.exports = new GraphQLSchema({
+    query: RootQuery
+});
+
+
+
+
+***********************************************************************************
+****Now we can have all books of particular author and 
+
+
+const graphql = require('graphql');
+const Book = require('../models/book');
+const Author = require('../models/Author');
+const _ = require('lodash');
+
+const {
+    GraphQLObjectType,
+    GraphQLString,
+    GraphQLSchema,
+    GraphQLID,
+    GraphQLInt,
+    GraphQLList
+} = graphql;
+
+const BookType = new GraphQLObjectType({				//Declaration of BookType
+    name: 'Book',													
+    fields: ( ) => ({
+        id: { type: GraphQLID },
+        name: { type: GraphQLString },
+        genre: { type: GraphQLString },
+        author: {
+            type: AuthorType,
+            resolve(parent, args){
+                return _.find(authors, { id: parent.authorId });   //getting author by author id in book 
+            }
+        }
+    })
+});
+
+const AuthorType = new GraphQLObjectType({					//Declaration of AuthorType
+    name: 'Author',
+    fields: ( ) => ({
+        id: { type: GraphQLID },
+        name: { type: GraphQLString },
+        age: { type: GraphQLInt },
+        books: {
+            type: new GraphQLList(BookType),                            //getting list books from particilar author id
+            resolve(parent, args){
+                //return _.filter(books, { authorId: parent.id });
+            }
+        }
+    })
+});
+
+const RootQuery = new GraphQLObjectType({
+    name: 'RootQueryType',
+    fields: {
+        book: {
+            type: BookType,
+            args: { id: { type: GraphQLID } },
+            resolve(parent, args){
+                return _.find(books, { id: args.id });   //get book by id
+            }
+        },
+        author: {
+            type: AuthorType,
+            args: { id: { type: GraphQLID } },
+            resolve(parent, args){
+                return _.find(authors, { id: args.id });     //get author by id
+            }
+        },
+        books: {
+            type: new GraphQLList(BookType),
+            resolve(parent, args){
+                return books;                      //getting all books
+            }
+        },
+        authors: {
+            type: new GraphQLList(AuthorType),
+            resolve(parent, args){
+                return authors;                        //getting all authors
+            }
+        }
+    }
+});
+
+module.exports = new GraphQLSchema({
+    query: RootQuery
+});
+
+
+
+*********************************************************
+
+
+Mutations(changing ,adding,deleting data)
+
+const Mutation = new GraphQLObjectType({
+    name: 'Mutation',
+    fields: {
+        addAuthor: {
+            type: AuthorType,
+            args: {
+                name: { type: GraphQLString },					//arguments
+                age: { type: GraphQLInt }						//arguments
+            },
+            resolve(parent, args){
+                let author = new Author({					  //creating object and mapping it
+                    name: args.name,
+                    age: args.age
+                });
+                return author.save();
+            }
+        },
+        addBook: {
+            type: BookType,
+            args: {
+                name: { type: GraphQLString },						//arguments
+                genre: { type: GraphQLString },                     //arguments
+                authorId: { type: GraphQLID }						//arguments
+            },
+            resolve(parent, args){
+                let book = new Book({                 //creating object and mapping it
+                    name: args.name,
+                    genre: args.genre,
+                    authorId: args.authorId
+                });
+                return book.save();                   //automaticalls saves in db
+            }
+        }
+    }
+});
+
+module.exports = new GraphQLSchema({
+    query: RootQuery,
+    mutation: Mutation
+});
+
+**************************************************************************************
+
+
+
+const graphql = require('graphql');
+const Book = require('../models/book');
+const Author = require('../models/Author');
+const _ = require('lodash');
+
+const {
+    GraphQLObjectType,
+    GraphQLString,
+    GraphQLSchema,
+    GraphQLID,
+    GraphQLInt,
+    GraphQLList,
+    GraphQLNonNull
+} = graphql;
+
+const BookType = new GraphQLObjectType({
+    name: 'Book',
+    fields: ( ) => ({
+        id: { type: GraphQLID },
+        name: { type: GraphQLString },
+        genre: { type: GraphQLString },
+        author: {
+            type: AuthorType,
+            resolve(parent, args){
+                return Author.findById(parent.authorId);			 //getting from db
+            }
+        }
+    })
+});
+
+const AuthorType = new GraphQLObjectType({
+    name: 'Author',
+    fields: ( ) => ({
+        id: { type: GraphQLID },
+        name: { type: GraphQLString },
+        age: { type: GraphQLInt },
+        books: {
+            type: new GraphQLList(BookType),
+            resolve(parent, args){
+                return Book.find({ authorId: parent.id });					 //getting from db
+            }
+        }
+    })
+});
+
+const RootQuery = new GraphQLObjectType({
+    name: 'RootQueryType',
+    fields: {
+        book: {
+            type: BookType,
+            args: { id: { type: GraphQLID } },
+            resolve(parent, args){
+                return Book.findById(args.id);					 //getting from db
+            }
+        },
+        author: {
+            type: AuthorType,
+            args: { id: { type: GraphQLID } },
+            resolve(parent, args){
+                return Author.findById(args.id);						 //getting from db
+            }
+        },
+        books: {
+            type: new GraphQLList(BookType),
+            resolve(parent, args){
+                return Book.find({});									 //getting from db
+            }
+        },
+        authors: {
+            type: new GraphQLList(AuthorType),
+            resolve(parent, args){
+                return Author.find({});  						 //getting from db
+            }
+        }
+    }
+});
+
+const Mutation = new GraphQLObjectType({
+    name: 'Mutation',
+    fields: {
+        addAuthor: {
+            type: AuthorType,
+            args: {
+                name: { type: GraphQLString },
+                age: { type: GraphQLInt }
+            },
+            resolve(parent, args){
+                let author = new Author({
+                    name: args.name,
+                    age: args.age
+                });
+                return author.save();
+            }
+        },
+        addBook: {
+            type: BookType,
+            args: {
+                name: { type: new GraphQLNonNull(GraphQLString) },     //cannot be null
+                genre: { type: new GraphQLNonNull(GraphQLString) },    //cannot be null
+                authorId: { type: new GraphQLNonNull(GraphQLID) }       //cannot be null
+            },
+            resolve(parent, args){
+                let book = new Book({
+                    name: args.name,
+                    genre: args.genre,
+                    authorId: args.authorId
+                });
+                return book.save();
+            }
+        }
+    }
+});
+
+module.exports = new GraphQLSchema({
+    query: RootQuery,
+    mutation: Mutation
+});
+*****************************************************************************************
+
+Appolo Integration with React and GraphQL
+
+
+
+App.js
+
+import React, { Component } from 'react';
+import ApolloClient from 'apollo-boost';
+import { ApolloProvider } from 'react-apollo';
+
+// components
+import BookList from './components/BookList';
+
+// apollo client setup
+const client = new ApolloClient({
+    uri: 'http://localhost:4000/graphql'
+});
+
+class App extends Component {
+  render() {
+    return (
+        <ApolloProvider client={client}>
+            <div id="main">
+                <h1>Ninja's Reading List</h1>
+                <BookList />
+            </div>
+        </ApolloProvider>
+    );
+  }
+}
+
+export default App;
+
+***********************************************
+Rendering Data with Component
+
+BookList.js
+
+import React, { Component } from 'react';
+import { gql } from 'apollo-boost';
+import { graphql } from 'react-apollo';
+
+const getBooksQuery = gql`
+    {
+        books {
+            name
+            id
+        }
+    }
+`;
+
+class BookList extends Component {
+    displayBooks(){                                               //function to get data from graphql
+        var data = this.props.data;
+        if(data.loading){
+            return( <div>Loading books...</div> );
+        } else {
+            return data.books.map(book => {
+                return(
+                    <li key={ book.id }>{ book.name }</li>
+                );
+            })
+        }
+    }
+    render(){
+        console.log(this.props);
+        return(
+            <div>
+                <ul id="book-list">
+                    { this.displayBooks() }
+                </ul>
+            </div>
+        );
+    }
+}
+
+export default graphql(getBooksQuery)(BookList);       //binding getBooksQuery to BookList component
+
+
+
+---------------------------------------------------------------------
+
+AddBook.js
+
+
+import React, { Component } from 'react';
+import { graphql } from 'react-apollo';
+import { getAuthorsQuery } from '../queries/queries';
+
+class AddBook extends Component {
+    displayAuthors(){
+        var data = this.props.data;
+        if(data.loading){
+            return( <option disabled>Loading authors</option> );
+        } else {
+            return data.authors.map(author => {
+                return( <option key={ author.id } value={author.id}>{ author.name }</option> );
+            });
+        }
+    }
+    render(){
+        return(
+            <form id="add-book">
+                <div className="field">
+                    <label>Book name:</label>
+                    <input type="text" />
+                </div>
+                <div className="field">
+                    <label>Genre:</label>
+                    <input type="text" />
+                </div>
+                <div className="field">
+                    <label>Author:</label>
+                    <select>
+                        <option>Select author</option>
+                        { this.displayAuthors() }
+                    </select>
+                </div>
+                <button>+</button>
+
+            </form>
+        );
+    }
+}
+
+export default graphql(getAuthorsQuery)(AddBook);
+
+
+*****************************************
+Updating Component Status
+
+AddBook.js
+
+
+
+
+import React, { Component } from 'react';
+import { graphql } from 'react-apollo';
+import { getAuthorsQuery } from '../queries/queries';
+
+class AddBook extends Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            name: '',
+            genre: '',
+            authorId: ''
+        };
+    }
+    displayAuthors(){
+        var data = this.props.data;
+        if(data.loading){
+            return( <option disabled>Loading authors</option> );
+        } else {
+            return data.authors.map(author => {
+                return( <option key={ author.id } value={author.id}>{ author.name }</option> );
+            });
+        }
+    }
+    submitForm(e){					//onSubmit this method is called and saved in state
+        e.preventDefault()                             //inbuild function to avoid its default action(i.e of refreshing)
+        console.log(this.state);						
+    }
+    render(){
+        return(
+            <form id="add-book" onSubmit={ this.submitForm.bind(this) } >
+                <div className="field">
+                    <label>Book name:</label>
+                    <input type="text" onChange={ (e) => this.setState({ name: e.target.value }) } />
+                </div>
+                <div className="field">
+                    <label>Genre:</label>
+                    <input type="text" onChange={ (e) => this.setState({ genre: e.target.value }) } />
+                </div>
+                <div className="field">
+                    <label>Author:</label>
+                    <select onChange={ (e) => this.setState({ authorId: e.target.value }) } >
+                        <option>Select author</option>
+                        { this.displayAuthors() }
+                    </select>
+                </div>
+                <button>+</button>
+            </form>
+        );
+    }
+}
+
+export default graphql(getAuthorsQuery)(AddBook);
+
+***********************************************************************
+
+
+
+queries.js
+
+import { gql } from 'apollo-boost';
+
+const getAuthorsQuery = gql`
+    {
+        authors {
+            name
+            id
+        }
+    }
+`;
+
+const getBooksQuery = gql`
+    {
+        books {
+            name
+            id
+        }
+    }
+`;
+
+const addBookMutation = gql`
+    mutation AddBook($name: String!, $genre: String!, $authorId: ID!){        //variables
+        addBook(name: $name, genre: $genre, authorId: $authorId){
+            name
+            id
+        }
+    }
+`;
+
+export { getAuthorsQuery, getBooksQuery, addBookMutation };
+---------------------------------------------------------------
+AddBook.js
+
+
+import React, { Component } from 'react';
+import { graphql, compose } from 'react-apollo';
+import { getAuthorsQuery, addBookMutation, getBooksQuery } from '../queries/queries';
+
+class AddBook extends Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            name: '',
+            genre: '',
+            authorId: ''
+        };
+    }
+    displayAuthors(){
+        var data = this.props.getAuthorsQuery;
+        if(data.loading){
+            return( <option disabled>Loading authors</option> );
+        } else {
+            return data.authors.map(author => {
+                return( <option key={ author.id } value={author.id}>{ author.name }</option> );
+            });
+        }
+    }
+    submitForm(e){
+        e.preventDefault()
+        // use the addBookMutation
+        this.props.addBookMutation({
+            variables: {                              //Mapping
+                name: this.state.name,
+                genre: this.state.genre,
+                authorId: this.state.authorId
+            },
+            refetchQueries: [{ query: getBooksQuery }]            //when book is added it automatically calls getBooksQuery again
+        });
+    }
+    render(){
+        return(
+            <form id="add-book" onSubmit={ this.submitForm.bind(this) } >
+                <div className="field">
+                    <label>Book name:</label>
+                    <input type="text" onChange={ (e) => this.setState({ name: e.target.value }) } />
+                </div>
+                <div className="field">
+                    <label>Genre:</label>
+                    <input type="text" onChange={ (e) => this.setState({ genre: e.target.value }) } />
+                </div>
+                <div className="field">
+                    <label>Author:</label>
+                    <select onChange={ (e) => this.setState({ authorId: e.target.value }) } >
+                        <option>Select author</option>
+                        { this.displayAuthors() }
+                    </select>
+                </div>
+                <button>+</button>
+            </form>
+        );
+    }
+}
+
+export default compose(											//Binding 2 queries in AddBook component
+    graphql(getAuthorsQuery, { name: "getAuthorsQuery" }),
+    graphql(addBookMutation, { name: "addBookMutation" })
+)(AddBook);

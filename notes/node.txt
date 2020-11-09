@@ -1,0 +1,147 @@
+-node is runtime env for javascript
+-it includes v8 engine of google
+-node is not framework for executing js.
+
+-node is Asynchronous by default
+ Node is non blocking i.e 1 thread to handle all req
+
+-----------------------
+**global Objects**
+
+console.log()
+setTimeout()
+clearTimeout()
+setInterval()
+clearInterval()
+
+
+
+**Modules**
+when we declare variable or funct it is globalscope
+EVERY APPLICATION HAS 1 MODULE 
+
+***********
+Creating module
+
+logger.js
+var url='http://mylogger.io/log';
+
+function log(msg)
+{
+	console.log(msg);
+}
+module.exports.log=log;  1//exporting object
+module.exports=log;		2//exporting only function
+
+app.js
+const logger=require('./logger')		1
+const log=require('./logger')    2
+logger.log('hiiii');    //1   if accepted as object
+log('hoooo');       //2   if exported as function
+
+*****************
+MODULE wrapper function
+
+function(exports,require,_filename,_dirname){
+//our code
+}
+
+**************************************
+inbuild module
+
+1)Path (path ,dir,filename,extension,filename without extension)
+
+const path=require('path');
+var pathObj=path.parse(_filename);
+console.log(pathObj);
+
+
+2) OS
+
+	const os=require('os');
+	var totalmemory=os.totalmem();
+	var freememory=os.freemem();
+	console,log('TotalMemory:'+totalmemory);  //normal way of concatination
+	console.log(`TotalMemory:${totalmem}`);   //Es6 way of concatination
+
+3) File System(all method come in async and synchr always use asynchrnronus)
+
+	const fs=require('fs')
+	const files=fs.readdirSync('./') ;  //display all files in this folder   Sync methof
+	
+	const files=fs.readdir('./',function(arr,files){
+	if(err) console.log('Error',err);
+	else console.log('Result',files);   //[arr.js,and all files]
+	
+	});
+
+4) Event
+
+	const EventEmitter=require('events');   EventEmitter is a class so all first letter capital
+	const emitter =new EventEmitter();   //emitter is object
+
+
+
+	emitter.on('messagelogged',function(arg){     //Register a Listener
+	cosole.log('listner is called',arg);  //arg has object 
+
+	});
+		
+	emitter.emit('messagelogged'); //Event is raised
+
+	OR
+
+	emitter.emit('messagelogged',{id:1,url:'http...'});
+	
+
+
+Example:
+		logger.js
+		
+		const EventEmitter=require('events');
+		
+		class Logger extends EventEmitter{
+			
+			log(msg){           
+				console.log(msg);
+			
+			//Raise an Event
+			this.emit('messagelogged',{id:1,url:'http://swdnwnw'});
+		
+			}	
+		}
+module.exports=Logger; //passing whole class
+
+
+			app.js
+
+	const EventEmitter=require('events');
+	
+	const Logger=require('./logger');   //importing file
+	const logger=new Logger();                //making object of class Logger
+	
+	//Register a listener
+	logger.on('messagelogged',(arg)=>{
+		console.log('Listener Called ',arg);
+		});
+		
+	logger.log('messae')   //calling a log method	of Logger class.
+	
+
+
+5)  HTTP MODULE
+
+	const http=require('http');
+	
+	const server=http.creatServer((req,res)=>{
+	if(req.url === '/'){
+		res.write('hello world');
+		res.end();
+	}
+	if(req.url === '/api/bookd'){
+		res.write(JSON.stringify([1,2,3]));   //to convert arry in string in json forma
+		res.end();
+	}
+	})
+	server.listen(3000);
+	console.log('Listening to pory 3000....');
